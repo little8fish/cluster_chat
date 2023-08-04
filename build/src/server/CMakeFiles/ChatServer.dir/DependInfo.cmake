@@ -4,15 +4,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/ros/dengjc/cluster_chat/src/server/chatserver.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/chatserver.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/chatservice.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/chatservice.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/db/db.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/db/db.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/main.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/main.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/model/friendmodel.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/friendmodel.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/model/groupmodel.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/groupmodel.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/model/offlinemessagemodel.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/offlinemessagemodel.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/model/usermodel.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/usermodel.cpp.o"
-  "/home/ros/dengjc/cluster_chat/src/server/redis/redis.cpp" "/home/ros/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/redis/redis.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/chatserver.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/chatserver.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/chatservice.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/chatservice.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/db/db.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/db/db.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/main.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/main.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/model/friendmodel.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/friendmodel.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/model/groupmodel.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/groupmodel.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/model/offlinemessagemodel.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/offlinemessagemodel.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/model/usermodel.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/model/usermodel.cpp.o"
+  "/home/dengjiacheng/dengjc/cluster_chat/src/server/redis/redis.cpp" "/home/dengjiacheng/dengjc/cluster_chat/build/src/server/CMakeFiles/ChatServer.dir/redis/redis.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

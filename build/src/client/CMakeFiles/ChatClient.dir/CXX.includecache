@@ -356,9 +356,9 @@ limits
 type_traits
 -
 
-/home/ros/dengjc/cluster_chat/src/client/main.cpp
+/home/dengjiacheng/dengjc/cluster_chat/src/client/main.cpp
 json.hpp
-/home/ros/dengjc/cluster_chat/src/client/json.hpp
+/home/dengjiacheng/dengjc/cluster_chat/src/client/json.hpp
 iostream
 -
 thread
@@ -390,9 +390,9 @@ semaphore.h
 atomic
 -
 group.hpp
-/home/ros/dengjc/cluster_chat/src/client/group.hpp
+/home/dengjiacheng/dengjc/cluster_chat/src/client/group.hpp
 user.hpp
-/home/ros/dengjc/cluster_chat/src/client/user.hpp
+/home/dengjiacheng/dengjc/cluster_chat/src/client/user.hpp
 public.hpp
-/home/ros/dengjc/cluster_chat/src/client/public.hpp
+/home/dengjiacheng/dengjc/cluster_chat/src/client/public.hpp
 

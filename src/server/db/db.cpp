@@ -2,6 +2,7 @@
 #include <muduo/base/Logging.h>
 #include <iostream>
 
+// 要先打开mysql  sudo service mysql start
 static string server = "127.0.0.1";
 static string user = "root";
 static string password = "123456";

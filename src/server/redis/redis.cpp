@@ -40,6 +40,7 @@ bool Redis::connect()
 
 bool Redis::publish(int channel, string message)
 {
+    // 直接redisCommand
     redisReply *reply = (redisReply *)redisCommand(_publish_context, "PUBLISH %d %s", channel, message.c_str());
     if (reply == nullptr)
     {
@@ -50,6 +51,7 @@ bool Redis::publish(int channel, string message)
     return true;
 }
 
+// 订阅
 bool Redis::subscribe(int channel)
 {
     // 使用redisCommand会阻塞 所以这里使用 分步骤
@@ -70,6 +72,7 @@ bool Redis::subscribe(int channel)
     return true;
 }
 
+// 取消订阅
 bool Redis::unsubscribe(int channel)
 {
     if (redisAppendCommand(this->_subcribe_context, "UNSUBSCRIBE %d", channel) == REDIS_ERR)

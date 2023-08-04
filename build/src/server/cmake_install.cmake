@@ -1,4 +1,4 @@
-# Install script for directory: /home/ros/dengjc/cluster_chat/src/server
+# Install script for directory: /home/dengjiacheng/dengjc/cluster_chat/src/server
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

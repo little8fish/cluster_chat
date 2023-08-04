@@ -10,7 +10,7 @@ bool UserModel::insert(User &user)
     MySQL mysql;
     if (mysql.connect())
     {
-        // 这里update做了什么操作
+        // 这里update做了什么操作 当然是执行语句啦
         if (mysql.update(sql))
         {
             // 为什么还要设置id user里面的id不算 要在表中插入的id才算
