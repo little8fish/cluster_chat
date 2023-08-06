@@ -3,8 +3,8 @@
 #include <iostream>
 
 // 要先打开mysql  sudo service mysql start
-static string server = "127.0.0.1";
-static string user = "root";
+static string server = "192.168.0.132";
+static string user = "djc";
 static string password = "123456";
 static string dbname = "chat";
 
@@ -21,8 +21,9 @@ MySQL::~MySQL()
 }
 bool MySQL::connect()
 {
+    // 连接不上是为什么  是端口号的问题？  自己设置服务器端口开的是3307
     MYSQL *p = mysql_real_connect(_conn, server.c_str(), user.c_str(),
-                                  password.c_str(), dbname.c_str(), 3306, nullptr, 0);
+                                  password.c_str(), dbname.c_str(), 3307, nullptr, 0);
     if (p != nullptr)
     {
         mysql_query(_conn, "set names gbk");

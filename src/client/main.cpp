@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
         close(clientfd);
         exit(-1);
     }
+    // 第二个参数为0表示只用于本进程
     sem_init(&rwsem, 0, 0);
 
     // 传入clientfd用于通信
