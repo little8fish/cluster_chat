@@ -94,7 +94,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
                 _userConnMap.insert({id, conn});
             }
 
-            // 订阅
+            // 订阅 这里订阅失败了？
             _redis.subscribe(id);
 
             user.setState("online");
