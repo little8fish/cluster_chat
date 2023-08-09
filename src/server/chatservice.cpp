@@ -247,22 +247,24 @@ void ChatService::oneChat(const TcpConnectionPtr &conn, json &js, Timestamp time
     int toid = js["toid"].get<int>();
     {
         lock_guard<mutex> lock(_connMutex);
-        // 找Conn 找不到则判断不在线
         auto it = _userConnMap.find(toid);
+        // 找到了直接发送 通过conn发送
         if (it != _userConnMap.end())
         {
             it->second->send(js.dump());
             return;
         }
     }
+    // 在user表中查看是否上线
     User user = _userModel.query(toid);
+    // 如果上线了 说明这个用户连接别的服务器 通过redis把消息发布出去
     if (user.getState() == "online")
     {
         // 发布消息
         _redis.publish(toid, js.dump());
         return;
     }
-    // 离线消息
+    // 否则 离线消息 其实是放在离线消息表中
     _offlineMsgModel.insert(toid, js.dump());
 }
 
@@ -300,25 +302,28 @@ void ChatService::groupChat(const TcpConnectionPtr &conn, json &js, Timestamp ti
 {
     int userid = js["id"].get<int>();
     int groupid = js["groupid"].get<int>();
+    // 获取到除了发送者外群组里的其他用户
     vector<int> useridVec = _groupModel.queryGroupUsers(userid, groupid);
-    // 查询群组用户id
+    // 对每个用户 发送消息
     for (int id : useridVec)
     {
         lock_guard<mutex> lock(_connMutex);
         auto it = _userConnMap.find(id);
-        // 直接发送
+        // 如果当前服务器里面保存了用户的conn 直接发送
         if (it != _userConnMap.end())
         {
             it->second->send(js.dump());
         }
+        // 没保存
         else
         {
             User user = _userModel.query(id);
-            // 通过redis发布订阅功能发送
+            // 查询用户在不在线 在线 通过redis发布订阅功能发送
             if (user.getState() == "online")
             {
                 _redis.publish(id, js.dump());
             }
+            // 不在线 放入离线消息
             else
             {
                 // 离线消息

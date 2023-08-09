@@ -34,6 +34,8 @@ void ChatServer::onConnection(const TcpConnectionPtr &conn)
         conn->shutdown();
     }
 }
+
+// 连接(知道谁发了消息过来) 和 消息
 void ChatServer::onMessage(const TcpConnectionPtr &conn,
                Buffer *buffer,
                Timestamp time)

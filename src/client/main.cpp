@@ -395,6 +395,7 @@ void mainMenu(int clientfd)
         }
         else
         {
+            // 获取到了command
             command = commandbuf.substr(0, idx);
         }
         auto it = commandHandlerMap.find(command);
@@ -403,6 +404,7 @@ void mainMenu(int clientfd)
             cerr << "invalid input command!" << endl;
             continue;
         }
+        // 调用对应的command函数
         it->second(clientfd, commandbuf.substr(idx + 1, commandbuf.size() - idx));
     }
 }
@@ -441,9 +443,12 @@ void chat(int clientfd, string str)
         cerr << "chat command invalid!" << endl;
         return;
     }
+    // 获取friendid
     int friendid = atoi(str.substr(0, idx).c_str());
+    // 获取要发送的消息
     string message = str.substr(idx + 1, str.size() - idx);
 
+    // 封装成json
     json js;
     js["msgid"] = ONE_CHAT_MSG;
     js["id"] = g_currentUser.getId();
@@ -454,6 +459,7 @@ void chat(int clientfd, string str)
     js["time"] = getCurrentTime();
     string buffer = js.dump();
 
+    // 通过fd与服务器通信
     int len = send(clientfd, buffer.c_str(), strlen(buffer.c_str()) + 1, 0);
     if (len == -1)
     {
