@@ -1,3 +1,7 @@
+/**
+ * 业务模块 用到了很多c++新特性编程 比如unordered_map 绑定器 绑定器绑定了消息id和消息回调函数 当网络模块收到一个消息请求时
+ * 会解析消息 拿到消息id 再调用相应的回调函数处理消息
+*/
 #include "chatservice.hpp"
 #include "public.hpp"
 #include <muduo/base/Logging.h>
@@ -94,7 +98,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
                 _userConnMap.insert({id, conn});
             }
 
-            // 订阅 这里订阅失败了？
+            // 订阅 
             _redis.subscribe(id);
 
             user.setState("online");
@@ -110,6 +114,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
             vector<string> vec = _offlineMsgModel.query(id);
             if (!vec.empty())
             {
+                // json格式允许有vector
                 response["offlinemsg"] = vec;
                 _offlineMsgModel.remove(id);
             }
@@ -124,6 +129,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
                     js["id"] = user.getId();
                     js["name"] = user.getName();
                     js["state"] = user.getState();
+                    // 序列化
                     vec2.push_back(js.dump());
                 }
                 response["friends"] = vec2;
@@ -147,9 +153,11 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
                         js["name"] = user.getName();
                         js["state"] = user.getState();
                         js["role"] = user.getRole();
+                        // 序列化
                         userV.push_back(js.dump());
                     }
                     grpjson["users"] = userV;
+                    // 序列化
                     groupV.push_back(grpjson.dump());
                 }
                 response["groups"] = groupV;
@@ -308,6 +316,7 @@ void ChatService::groupChat(const TcpConnectionPtr &conn, json &js, Timestamp ti
     for (int id : useridVec)
     {
         lock_guard<mutex> lock(_connMutex);
+        // 添加了发言者的id和name 还添加了时间
         auto it = _userConnMap.find(id);
         // 如果当前服务器里面保存了用户的conn 直接发送
         if (it != _userConnMap.end())

@@ -118,11 +118,13 @@ int main(int argc, char *argv[])
 
             g_isLoginSuccess = false;
 
+            // 最后参数flag=0等同于write
             int len = send(clientfd, request.c_str(), strlen(request.c_str()) + 1, 0);
             if (len == -1)
             {
                 cerr << "send login msg error: " << request << endl;
             }
+            // 发送完了 等待
             sem_wait(&rwsem); // 等待信号量，由子线程处理完登录的响应消息后，通知这里
 
             if (g_isLoginSuccess)
@@ -290,6 +292,7 @@ void readTaskHandler(int clientfd)
                  << " said: " << js["msg"] << endl;
             continue;
         }
+        // 如果是群消息 打印如下
         if (msgtype == GROUP_CHAT_MSG)
         {
             cout << "群消息[" << js["groupid"] << "]:" << js["time"] << " [" << js["id"] << "]" << js["name"]
@@ -523,6 +526,7 @@ void groupchat(int clientfd, string str)
 
     json js;
     js["msgid"] = GROUP_CHAT_MSG;
+    // 添加了发言者的id和name 还添加了时间
     js["id"] = g_currentUser.getId();
     js["name"] = g_currentUser.getName();
     js["groupid"] = groupid;

@@ -1,3 +1,6 @@
+/*
+    网络模块 采用性能不错的开源网络库muduo 能够实现网络模块和业务模块的解耦 让开发者专注于自己的业务开发
+*/
 #include "chatserver.hpp"
 #include <functional>
 #include "json.hpp"

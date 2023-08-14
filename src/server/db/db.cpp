@@ -1,3 +1,6 @@
+/**
+ * 数据存储层面 采用了mysql对项目的一些关键数据进行落地 比如说用户信息 好友关系 群组信息 群组用户列表 离线消息等 都是通过mysql进行存储的
+*/
 #include "db.h"
 #include <muduo/base/Logging.h>
 #include <iostream>
