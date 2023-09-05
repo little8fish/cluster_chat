@@ -70,6 +70,10 @@ private:
     GroupModel _groupModel;
     // redis操作对象
     Redis _redis;
+    // 指针
+    static ChatService *_instance;
+    // 锁
+    static mutex _mutex;
 };
 
 #endif

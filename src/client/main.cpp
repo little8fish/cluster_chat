@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
     server.sin_port = htons(port);
     server.sin_addr.s_addr = inet_addr(ip);
 
+    // 客户端连接服务器 socket连接 但是还没有登录
     if (connect(clientfd, (sockaddr *)&server, sizeof(sockaddr_in)) == -1)
     {
         cerr << "connect server error" << endl;

@@ -1,5 +1,5 @@
 /**
- * 业务模块 用到了很多c++新特性编程 比如unordered_map 绑定器 绑定器绑定了消息id和消息回调函数 当网络模块收到一个消息请求时
+ * 业务模块 主要是业务实现 用到了很多c++新特性编程 比如unordered_map 绑定器 绑定器绑定了消息id和消息回调函数 当网络模块收到一个消息请求时
  * 会解析消息 拿到消息id 再调用相应的回调函数处理消息
 */
 #include "chatservice.hpp"
@@ -11,13 +11,25 @@
 using namespace std;
 using namespace muduo;
 
+// 静态成员类外初始化 且不加static
+ChatService* ChatService::_instance = nullptr;
+mutex ChatService::_mutex;
+
 // 构造函数设为private 通过instance获取单例
 ChatService *ChatService::instance()
 {
-    static ChatService service;
-    return &service;
+    // 懒汉式 但线程不安全
+    // static ChatService service;
+    // return &service;
+    if (_instance == nullptr) {
+        lock_guard<mutex> lock(_mutex);
+        if (_instance == nullptr) {
+            _instance = new ChatService;
+        }
+    }
+    return _instance;
 }
-// 初始化 消息 -> 业务函数
+// 初始化 消息 -> 业务函数 只做一次初始化
 ChatService::ChatService()
 {
     // 登录业务函数 枚举类型转化为整形
@@ -39,9 +51,11 @@ ChatService::ChatService()
     _msgHandlerMap.insert({GROUP_CHAT_MSG, std::bind(&ChatService::groupChat, this, _1, _2, _3)});
 
     // 连接redis服务器 监控消息
+    // connect会开一个线程接收订阅消息
     if (_redis.connect())
     {
         // 绑定Redis消息处理函数
+        // redis客户端接收到消息之后 调用handleRedisSubscribeMessage处理消息
         _redis.init_notify_handler(std::bind(&ChatService::handleRedisSubscribeMessage, this, _1, _2));
     }
 }
@@ -116,6 +130,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
             {
                 // json格式允许有vector
                 response["offlinemsg"] = vec;
+                // 离线消息取出之后要删除
                 _offlineMsgModel.remove(id);
             }
             // 查询该用户的好友信息并返回
@@ -123,6 +138,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
             if (!userVec.empty())
             {
                 vector<string> vec2;
+                // json的vector中 vec的元素类型肯定不能为User 所以把User转换为string(通过User信息序列化成string)
                 for (User &user : userVec)
                 {
                     json js;
@@ -142,10 +158,12 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
                 for (Group &group : groupuserVec)
                 {
                     json grpjson;
+                    // 群组基本信息
                     grpjson["id"] = group.getId();
                     grpjson["groupname"] = group.getName();
                     grpjson["groupdesc"] = group.getDesc();
                     vector<string> userV;
+                    // 群组成员信息
                     for (GroupUser &user : group.getUsers())
                     {
                         json js;
@@ -184,12 +202,15 @@ void ChatService::loginout(const TcpConnectionPtr &conn, json &js, Timestamp tim
         auto it = _userConnMap.find(userid);
         if (it != _userConnMap.end())
         {
+            // 释放连接
             _userConnMap.erase(it);
         }
     }
 
+    // 取消订阅
     _redis.unsubscribe(userid);
 
+    // 置为下线状态
     User user(userid, "", "", "offline");
     _userModel.updateState(user);
 }
@@ -249,6 +270,8 @@ void ChatService::clientCloseException(const TcpConnectionPtr &conn)
 }
 
 // 双人聊天业务
+// 每次聊天都要查找这个连接 然后再发送出去吗
+// 是的 因为unordered_map查找效率很高 所以没必要说再自己保存用户对朋友发送消息的连接 浪费空间
 void ChatService::oneChat(const TcpConnectionPtr &conn, json &js, Timestamp time)
 {
 
@@ -278,10 +301,20 @@ void ChatService::oneChat(const TcpConnectionPtr &conn, json &js, Timestamp time
 
 void ChatService::addFriend(const TcpConnectionPtr &conn, json &js, Timestamp time)
 {
+    // int userid = js["id"].get<int>();
+    // int friendid = js["friendid"].get<int>();
+
+    // _friendModel.insert(userid, friendid);
+
+    // 修复双向朋友关系
     int userid = js["id"].get<int>();
     int friendid = js["friendid"].get<int>();
 
-    _friendModel.insert(userid, friendid);
+    if (userid != friendid) {
+        // 双向朋友
+        _friendModel.insert(userid, friendid);
+        _friendModel.insert(friendid, userid);
+    }
 }
 
 // 创建群组
@@ -343,7 +376,8 @@ void ChatService::groupChat(const TcpConnectionPtr &conn, json &js, Timestamp ti
 }
 
 // 服务器订阅了 用户id 的这个通道 当别的服务器上的用户给该用户发送消息 
-// 该服务器会收到消息 然后查找该用户 给该用户转发消息 这就实现了跨服务器通信的问题
+// 该服务器上的redis接收线程会收到消息 调用此函数
+// 查找该用户 给该用户转发消息 这就实现了跨服务器通信的问题
 void ChatService::handleRedisSubscribeMessage(int userid, string msg)
 {
     lock_guard<mutex> lock(_connMutex);

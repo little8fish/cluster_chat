@@ -6,7 +6,7 @@
 #include <iostream>
 
 // 要先打开mysql  sudo service mysql start
-static string server = "192.168.0.130";
+static string server = "192.168.0.154";
 static string user = "djc";
 static string password = "123456";
 static string dbname = "chat";

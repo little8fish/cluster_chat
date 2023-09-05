@@ -28,6 +28,7 @@ public:
 private:
     redisContext *_publish_context;
     redisContext *_subcribe_context;
+    // 收到订阅的消息，给service层上报
     function<void(int, string)> _notify_message_handler;
 };
 

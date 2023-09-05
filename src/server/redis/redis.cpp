@@ -11,6 +11,8 @@
 #include "redis.hpp"
 #include <iostream>
 
+
+// 发布通道 订阅通道
 Redis::Redis() : _publish_context(nullptr), _subcribe_context(nullptr)
 {
 }
@@ -40,7 +42,9 @@ bool Redis::connect()
         cerr << "connect redis failed!" << endl;
         return false;
     }
-    // 开一个线程 监控消息
+    // 开一个线程 监控消息 
+    // 因为通常订阅之后 默认是阻塞的 
+    // 然后这里的订阅会仅订阅 不阻塞等待回复 用一个接收线程等待所有回复
     thread t([&]()
              { observer_channel_message(); });
     t.detach();
@@ -48,6 +52,7 @@ bool Redis::connect()
     return true;
 }
 
+// 发布消息
 bool Redis::publish(int channel, string message)
 {
     // 直接redisCommand
@@ -65,6 +70,7 @@ bool Redis::publish(int channel, string message)
 bool Redis::subscribe(int channel)
 {
     // 使用redisCommand会阻塞 所以这里使用 分步骤
+    // 添加命令
     if (redisAppendCommand(this->_subcribe_context, "SUBSCRIBE %d", channel) == REDIS_ERR)
     {
         cerr << "subscribe command failed!" << endl;
@@ -73,6 +79,7 @@ bool Redis::subscribe(int channel)
     int done = 0;
     while (!done)
     {
+        // 把命令发过去 但是不等待接收 
         if (redisBufferWrite(this->_subcribe_context, &done) == REDIS_ERR)
         {
             cerr << "subscribe command failed!" << endl;
@@ -110,6 +117,7 @@ void Redis::observer_channel_message()
     // 等待消息
     while (redisGetReply(this->_subcribe_context, (void **)&reply) == REDIS_OK)
     {
+        // reply是个size为3的数组 最后一个元素为消息 倒数第二个元素为通道号
         if (reply != nullptr && reply->element[2] != nullptr && reply->element[2]->str != nullptr)
         {
             // 订阅的用户收到消息后 服务器调用 消息转发服务
@@ -120,6 +128,8 @@ void Redis::observer_channel_message()
     cerr << ">>>>>>>>>>>>> observer_channel_message quit <<<<<<<<<<<<<" << endl;
 }
 
+
+// 初始化回调操作
 void Redis::init_notify_handler(function<void(int, string)> fn) {
     this->_notify_message_handler = fn;
 }
