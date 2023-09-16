@@ -107,6 +107,7 @@ int main(int argc, char *argv[])
             char pwd[50] = {0};
             cout << "userid: ";
             cin >> id;
+            // 读取残留的换行符
             cin.get();
             cout << "userpassword: ";
             cin.getline(pwd, 50);

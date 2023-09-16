@@ -42,6 +42,8 @@ bool Redis::connect()
         cerr << "connect redis failed!" << endl;
         return false;
     }
+    
+
     // 开一个线程 监控消息 
     // 因为通常订阅之后 默认是阻塞的 
     // 然后这里的订阅会仅订阅 不阻塞等待回复 用一个接收线程等待所有回复

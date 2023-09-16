@@ -27,6 +27,8 @@ void ChatServer::start()
     // 服务器开始运行
     _server.start();
 }
+
+// 属于工作线程
 void ChatServer::onConnection(const TcpConnectionPtr &conn)
 {
     // 连接未建立时 
@@ -38,6 +40,7 @@ void ChatServer::onConnection(const TcpConnectionPtr &conn)
     }
 }
 
+// 属于工作线程
 // 连接(知道谁发了消息过来) 和 消息
 void ChatServer::onMessage(const TcpConnectionPtr &conn,
                Buffer *buffer,

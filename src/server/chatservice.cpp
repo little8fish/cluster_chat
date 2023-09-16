@@ -29,7 +29,7 @@ ChatService *ChatService::instance()
     }
     return _instance;
 }
-// 初始化 消息 -> 业务函数 只做一次初始化
+// 初始化 消息 -> 业务函数 只做一次初始化（单例模式）
 ChatService::ChatService()
 {
     // 登录业务函数 枚举类型转化为整形
@@ -108,7 +108,7 @@ void ChatService::login(const TcpConnectionPtr &conn, json &js, Timestamp time)
         {
             {
                 lock_guard<mutex> lock(_connMutex);
-                // 绑定用户的id 和 conn
+                // 绑定用户的id 和 conn 保存一条连接
                 _userConnMap.insert({id, conn});
             }
 
